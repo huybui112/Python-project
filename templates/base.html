@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Shop Homepage - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico'%}" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url "index" %}">Home</a></li>
+                        <li class="nav-item">
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url "index" %}">All Products</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                {% for category in categories %}
+                                <li><a class="dropdown-item" href="{% url "category" %}?categoryId={{category.id}}">{{category.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="{% url "profile" %}">{{user.username}}</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="{% url "logout" %}">Logout</a>
+                        </li>
+                            <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Manage</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if user.account.is_Admin %}
+                            <li class="nav-item">
+                                <a class="dropdown-item" aria-current="page" href="{% url "account" %}">Manager Account</a>
+                            </li>
+                            {% endif %}
+                            {% if user.account.is_Sell %}
+                            <li class="nav-item">
+                                <a class="dropdown-item" aria-current="page" href="{% url "myshop" %}?id={{user.id}}">My shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" aria-current="page" href="{% url "product" %}">Manager Product</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" aria-current="page" href="{% url "customerOrder" %}">Customer Orders</a>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="dropdown-item" aria-current="page" href="{% url "yourOrder" %}">Your Orders</a>
+                            </li>
+                            </ul>
+                            </li>
+                        {% else %}
+                        <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="{% url "login" %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="{% url "register" %}">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url "registerSeller" %}">Start Seller</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <form class="d-flex" method = "GET" action = "{% url "search" %}">
+                                {% comment %} {% csrf_token %} {% endcomment %}
+                                <div class="input-group">
+                                    <input name="search" class="form-control" type="search" placeholder="Search" aria-label="Search" value="{{ request.GET.search }}" id="search-input">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </div>
+                            </form>
+                        </li>
+                      </ul>
+                    <form class="d-flex" action = "{% url "cart" %}">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">{{order.getItem}}</span>
+                        </button>
+                    </form>
+                    
+                </div>
+            </div>
+        </nav>
+        <!--main-->
+        {% block main %}{% endblock main %}
+        
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="{% static 'js/scripts.js'%}"></script>
+        <script>
+            // Lấy giá trị tìm kiếm từ thanh input
+            var searchInput = document.getElementById('search-input');
+            var searchValue = searchInput.value;
+        
+            // Chia các từ trong giá trị tìm kiếm thành mảng
+            var searchWords = searchValue.split(' ');
+        
+            // Gán lại giá trị tìm kiếm vào thanh input sau khi tìm kiếm
+            searchInput.value = searchWords.join(' ');
+        </script>
+    </body>
+</html>

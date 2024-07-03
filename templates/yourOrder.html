@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static "css/s1.css" %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <style>
+            @media (max-width: 767.98px) { .border-sm-start-none { border-left: none !important; } }
+        </style>
+    </head>
+    <body>
+      
+        <section style="background-color: #eee;">
+        </div>
+        <h5>
+        <a href="{% url "index" %}"><i class="fas fa-angle-left me-2"></i>Home</a>
+        </h5>
+        </div>
+            {% for order in orders %}
+            <div class="container py-3"> <!-- Thay đổi py-4 thành py-3 -->
+              <div class="row justify-content-center mb-3">
+                <div class="col-md-12 col-xl-8">
+                  <div class="card shadow-0 border rounded-3">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6 col-lg-9 col-xl-9">
+                          <h5 class="font-weight-bold">No Order: {{order.id}}</h5>
+                          <div class="d-flex flex-row">
+                            {% if order.status == -1 %}
+                            <div class="text-danger mb-1 me-2">
+                              <i class="fa fa-star">Canceled</i>
+                            </div>
+                            {% endif %}
+                            {% if order.status == 2 %}
+                            <div class="text-success mb-1 me-2">
+                              <i class="fa fa-star">Completed</i>
+                            </div>
+                            {% endif %}
+                          </div>
+                          <div class="mt-1 mb-0 text-muted small">
+                            {% for orderitem in order.orderitem_set.all %}
+                            <div class="row">
+                              <div class="col-md-4 col-lg-3">
+                                <img src="{{ orderitem.product.image.url }}" class="img-fluid" style="width: 150px;" alt="Product Image">
+                              </div>
+                              <div class="col-md-8 col-lg-9">
+                                <p class="font-weight-bold">{{ orderitem.product.name }}: x{{ orderitem.quantity }}</p>
+                                <p>{{ orderitem.total_price }}</p>
+                                <p>Size: {{ orderitem.size }}</p>
+                                <a href = "{% url "myshop" %}?id={{orderitem.product.sellerId.id}}"> Shop: {{orderitem.product.sellerId }}</a>
+                              </div>
+                            </div>
+                            {% endfor %}
+                            
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 col-xl-3 border-sm-start-none border-start">
+                          <div class="d-flex flex-row align-items-center mb-1">
+                            <h4 class="mb-1 me-1">{{ order.total_amount }}</h4>
+                          </div>
+                          <h6 class="text-success">Free shipping</h6>
+                          <h6>Date: {{order.created_at}}</h6>
+                          <h6>Address: {{order.address}}</h6>
+                          <h6>Phone Number: {{order.phoneNumber}}</h6>
+                          {% if order.status == 1 %}
+                          <div class="d-flex flex-column mt-4">
+                            <a href = "{% url "completeOrder" %}?orderId={{order.id}}"  class="btn btn-primary btn-sm" type="button">Complete</a>
+                          </div>
+                        
+                          <div class="d-flex flex-column mt-4">
+                            <a href = "{% url "cancelOrder" %}?orderId={{order.id}}"  class="btn btn-danger btn-sm" type="button">Cancel</a>
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </section>
+    </body>
+</html>

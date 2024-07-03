@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap CRUD Data Table for Database with Modal Form</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="{% static 'css/manager.css'%}" rel="stylesheet" type="text/css"/>
+        <style>
+            img{
+                width: 200px;
+                height: 120px;
+            }
+        </style>
+    <body>
+        <div class="container">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2>Edit <b>Product</b></h2>
+                        </div>
+                        <div class="col-sm-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="editEmployeeModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{% url "editProduct" %}?productId={{product.id}}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal-header">						
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">					
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input value="{{product.name}}" name="name" type="text" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Image</label>
+                                    <input type="file" name="image" accept="image/*" class="form-control">
+                                
+                                </div>
+                                <div class="form-group">
+                                    <label>Price</label>
+                                    <input value="{{product.price}}" name="price" type="text" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sale</label>
+                                    <input value="{{product.sale}}" name="sale" type="text" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input value="{{product.description}}" name="description" type="text" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <select name="category" class="form-select" aria-label="Default select example">
+                                        {% for category in categories %}
+                                            {% if product.category == category %}
+                                            <option selected value={{category.id}}>{{category.name}}</option>
+                                            {% else %}
+                                            <option value={{category.id}}>{{category.name}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <option value="new_category">Add New Category</option>
+                                    </select>
+                                </div>
+                                <div id="new-category-container" style="display: none;">
+                                    <label>New Category</label>
+                                    <input type="text" name="new_category" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Sizes</label>
+                                    <input value="{{product.sizes}}" name="sizes" type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" class="btn btn-success" value="Edit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script>
+            const selectElement = document.querySelector('select[name="category"]');
+            const newCategoryContainer = document.querySelector('#new-category-container');
+            const newCategoryInput = document.querySelector('input[name="new_category"]');
+          
+            selectElement.addEventListener('change', function() {
+              if (this.value === 'new_category') {
+                newCategoryContainer.style.display = 'block';
+                newCategoryInput.required = true;
+              } else {
+                newCategoryContainer.style.display = 'none';
+                newCategoryInput.required = false;
+              }
+            });
+          </script>
+    </body>
+</html>
